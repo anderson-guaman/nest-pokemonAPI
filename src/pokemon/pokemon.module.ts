@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+
 import { PokemonService } from './pokemon.service';
 import { PokemonController } from './pokemon.controller';
 import { Pokemon, PokemonSchema } from './entities/pokemon.entity';
@@ -8,7 +10,7 @@ import { Pokemon, PokemonSchema } from './entities/pokemon.entity';
   controllers: [PokemonController],
   providers: [PokemonService],
   imports: [
-    
+    ConfigModule,
     MongooseModule.forFeature([
       // este es es si definicion de la coleccion dentro de mogo 
       {
@@ -16,7 +18,9 @@ import { Pokemon, PokemonSchema } from './entities/pokemon.entity';
         schema: PokemonSchema, // la entidad como tal 
       },
       // todos los esquemas o modelos de coleccion que se tenga en adelante 
-    ])
+    ]),
+
+    
   ],
   exports:[
     PokemonService,

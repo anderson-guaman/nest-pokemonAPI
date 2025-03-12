@@ -10,15 +10,16 @@ async function bootstrap() {
   // validaciones globales de los dto y decoradores de clases
   app.useGlobalPipes( 
     new ValidationPipe({ 
-    whitelist: true, 
-    forbidNonWhitelisted: true,
-    transform: true,
-    transformOptions:{
+      whitelist: true, 
+      forbidNonWhitelisted: true,
+      transform: true,
+      transformOptions:{
       enableImplicitConversion: true,
     }
     }) 
   );
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT!);
+  console.log( `app running on port ${process.env.PORT}` )
 }
 bootstrap();

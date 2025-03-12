@@ -1,20 +1,26 @@
-import { isValidObjectId, Model } from 'mongoose';
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { ConfigService } from '@nestjs/config';
+
+import { isValidObjectId, Model } from 'mongoose';
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
 import { UpdatePokemonDto } from './dto/update-pokemon.dto';
 import { Pokemon } from './entities/pokemon.entity';
-import { isEmpty, isNotEmpty } from 'class-validator';
+import { isEmpty } from 'class-validator';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class PokemonService {
-
+   private defaultLimit: number;
    constructor(
       // para inyectar un model en nest y mongoose
       @InjectModel(Pokemon.name)
-      private readonly pokemonModel: Model<Pokemon>
-   ) { }
+      private readonly pokemonModel: Model<Pokemon>,
+      private readonly configService: ConfigService,
+   ) { 
+      this.defaultLimit = this.configService.get<number>('defaultLimit')!;
+      // console.log( this.configService.get<number>('defaultLimit')! ) // llega en string no en numero 
+   }
 
 
    async create(createPokemonDto: CreatePokemonDto) {
@@ -36,7 +42,7 @@ export class PokemonService {
    async findAll( paginationDto : PaginationDto) {
       // limit limita la cantidad de registros, 
       // offset se salta esa cantidad de registros y trae los siguiente n registros de acuerdo al limite
-      const { limit = 10, offset = 0 } = paginationDto;
+      const { limit = this.defaultLimit, offset = 0 } = paginationDto;
       return await this.pokemonModel.find()
       .limit( limit )
       .skip ( offset )
